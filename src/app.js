@@ -39,3 +39,53 @@
 //
 //
 // Optional -> destroying a car.
+
+const url = "https://wagon-garage-api.herokuapp.com/danmans/cars";
+const carList = document.querySelector('.cars-list');
+const carForm = document.getElementById('new-car');
+
+const display = (car) => {
+  const html = `
+  <div class="car">
+    <div class="car-image">
+      <img src="http://loremflickr.com/300/300/${car.brand}%20${car.model}" />
+    </div>
+    <div class="car-info">
+      <h4>${car.brand} ${car.model}</h4>
+      <p><strong>Owner:</strong> ${car.owner}</p>
+      <p><strong>Plate:</strong> ${car.plate}</p>
+    </div>
+  </div>`;
+  carList.insertAdjacentHTML("beforeend", html);
+};
+
+const displayCars = () => {
+  fetch(url)
+    .then(response => response.json())
+    .then((data) => {
+      data.forEach(display);
+    });
+};
+
+const createCar = (event) => {
+  event.preventDefault();
+  const car = {
+    brand: document.getElementById("brand").value,
+    model: document.getElementById("model").value,
+    plate: document.getElementById("plate").value,
+    owner: document.getElementById("owner").value
+  };
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(car)
+  });
+};
+
+
+displayCars();
+
+carForm.addEventListener("submit", (event) => {
+  createCar(event);
+  displayCars();
+});
